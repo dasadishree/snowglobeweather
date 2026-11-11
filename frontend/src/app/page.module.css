@@ -87,6 +87,7 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(#101b3b, #405b7a 75%, #b5c8d2);
+  transition: background 1.5s ease;
 }
 .moon{
   position: absolute;
@@ -111,6 +112,9 @@
   bottom: 0;
   width: 100%;
   height: 43%;
+}
+.globeLandscape{
+  z-index: 4;
 }
 .mountain{
   position: absolute;
@@ -183,6 +187,107 @@
   font-size: 14px;
   padding-bottom: 10px;
 }
+.clouds{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.8;
+  background:
+    radial-gradient(ellipse 22% 9% at 25% 34%, #c3d0d9 0%, transparent 100%),
+    radial-gradient(ellipse 27% 12% at 38% 32%, #aabac8 0%, transparent 100%),
+    radial-gradient(ellipse 25% 10% at 75% 22%, #d0d9df 0%, transparent 100%);
+  animation: cloudDrift 18s ease-in-out infinite alternate;
+}
+
+.rain{
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.65;
+  background-image: repeating-linear-gradient(
+    105deg,
+    transparent 0px,
+    transparent 17px,
+    #c9e5f5 18px,
+    transparent 20px
+  );
+  background-size: 35px 45px;
+  animation: rainFall 0.7s linear infinite;
+}
+.snow{
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, #fff 1.5px, transparent 2px),
+    radial-gradient(circle, #e5f4ff 2px, transparent 2.5px),
+    radial-gradient(circle, #fff 1px, transparent 2px);
+  background-size: 65px 75px, 100px 110px, 45px 55px;
+  background-position: 0 0, 30px 20px, 15px 40px;
+  animation: snowFall 8s linear infinite;
+}
+.fog{
+  position: absolute;
+  inset: 35% 0 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    #dce6e8a8 55%,
+    #dce6e880
+  );
+  animation: fogDrift 7s ease-in-out infinite alternate;
+}
+.sunlight{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 75% 25%,
+    #fff4bd75 0%,
+    #ffe9a322 20%,
+    transparent 48%
+  );
+}
+@keyframes rainFall{
+  from{
+    background-position: 0 0;
+  } to{
+    background-position: -20px 100px;
+  }
+}
+
+@keyframes snowFall{
+  from{
+    background-position: 0 0, 30px 20px, 15px 40px;
+  } to{
+    background-position: 35px 300px, 80px 350px, -20px 250px;
+  }
+}
+
+@keyframes cloudDrift{
+  from{
+    transform: translateX(-8px);
+  } to{
+    transform: translateX(12px);
+  }
+}
+@keyframes fogDrift{
+  from{
+    opacity: 0.3;
+    transform: translateX(-8px);
+  }
+  to{
+    opacity: 0.7;
+    transform: translateX(8px);
+  }
+}
+
 @media(max-width: 750px){
   .page{
     padding: 24px 6%;

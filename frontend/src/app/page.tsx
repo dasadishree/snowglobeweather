@@ -9,6 +9,17 @@ type WeatherData = {
   low: number;
   wind_speed: number;
   condition: string;
+  scene: string;
+  lighting: string;
+  effects: {
+    rain: boolean;
+    snow: boolean;
+    clouds: boolean;
+    fog: boolean;
+    lightning: boolean;
+    sunlight: boolean;
+    stars: boolean;
+  };
 };
 
 export default function Home() {
@@ -62,21 +73,43 @@ export default function Home() {
         <div className={styles.globe}>
           <div className={styles.globeGlass}>
             <div className={styles.globeSky}>
-              <div className={styles.moon}/>
+              {weather?.lighting === "night" && (
+                <div className={styles.moon}/>
+              )}
+
+            {weather?.effects.stars && (
               <div className={styles.stars}>✦ · ✧ · ✦</div>
+            )}
             </div>
 
-              <div className={styles.globeLandscape}>
-                <div className={styles.mountain}/>
-                <div className={styles.snowGround}/>
-              </div>
+            {weather?.effects.clouds && (
+              <div className={styles.clouds}/>
+            )}
+
+            {weather?.effects.rain && (
+              <div className={styles.rain}/>
+            )}
+
+            {weather?.effects.snow && (
+              <div className={styles.snow}/>
+            )}
+            {weather?.effects.fog && (
+              <div className={styles.fog}/>
+            )}
+            {weather?.effects.sunlight && (
+              <div className={styles.sunlight}/>
+            )}
+            <div className={styles.globeLandscape}>
+              <div className={styles.mountain}/>
+              <div className={styles.snowGround}/>
             </div>
+          </div>
 
             <div className={styles.globeNeck}/>
             <div className={styles.globeBase}>
               <div className={styles.baseHighlight}/>
             </div>
-          </div>
+            </div>
 
           <div className={styles.weather}>
             <p className={styles.temperature}>
@@ -99,7 +132,9 @@ export default function Home() {
               </div>
               <div>
                 <span>LOW</span>
-                <strong>{weather ? `${Math.round(weather.low*9/5+32)}}°` : "--"}</strong>
+                <strong>
+                  {weather ? `${Math.round(weather.low*9/5+32)}°` : "--"}
+                </strong>
               </div>
               <div>
                 <span>WIND</span>
