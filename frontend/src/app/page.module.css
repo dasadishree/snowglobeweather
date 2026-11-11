@@ -139,5 +139,74 @@
   height: 48px;
   border-radius: 12px 12px 35px 35px;
   background: linear-gradient(90deg, #526779, #d0dce0, #536a7d);
-  
+  box-shadow: inset 0 -8px 10px #25384b;
+  position: relative;
+}
+.baseHighlight{
+  position: absolute;
+  top: 5px;
+  left: 12%;
+  width: 76%;
+  height: 2px;
+  background: #ffffff75;
+}
+.weather{
+  min-width: 170px;
+}
+.temperature{
+  font-family: Georgia, serif;
+  font-size: 72px;
+  margin: 0;
+  font-weight: 400;
+}
+.feelsLike{
+  margin-top: 0;
+}
+.weatherDetails{
+  display: flex;
+  gap:22px;
+  margin-top:35px;
+}
+.weatherDetails div{
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.weatherDetails strong{
+  font-size: 13px;
+  font-weight: 400;
+}
+.footer{
+  color: #9aabbd;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  padding-bottom: 10px;
+}
+@media(max-width: 750px){
+  .page{
+    padding: 24px 6%;
+  }
+  .experience{
+    flex-direction: column;
+    justify-content: center;
+    gap: 25px;
+    text-align: center;
+  }
+  .globe{
+    width: min(75vw, 390px);
+  }
+  .location h1{
+    font-size: 25px;
+  }
+  .temperature{
+    font-size: 48px;
+  }
+  .weatherDetails{
+    justify-content: center;
+    margin-top: 15px;
+  }
+  .footer{
+    margin-top:25px;
+  }
 }
