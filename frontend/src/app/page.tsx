@@ -72,7 +72,24 @@ export default function Home() {
         
         <div className={styles.globe}>
           <div className={styles.globeGlass}>
-            <div className={styles.globeSky}>
+            <div
+              className={`${styles.globeSky} ${
+                weather?.lighting === "day" ? styles.day : styles.night
+              } ${
+                weather?.scene==="rain" || weather?.scene === "thunderstorm"
+                  ? styles.stormy
+                  : weather?.scene === "snow"
+                  ? styles.snowy
+                  : weather?.scene === "fog"
+                  ? styles.foggy
+                  : weather?.scene === "overcast"
+                  ? styles.overcast
+                  : weather?.scene === "partly_cloudy"
+                  ? styles.partlyCloudy
+                  : styles.clearSky
+              }
+              }`}
+            >
               {weather?.lighting === "night" && (
                 <div className={styles.moon}/>
               )}
@@ -133,7 +150,7 @@ export default function Home() {
               <div>
                 <span>LOW</span>
                 <strong>
-                  {weather ? `${Math.round(weather.low*9/5+32)}°` : "--"}
+                  {weather ? `${Math.round(weather.low * 9/5 + 32)}°` : "--"}
                 </strong>
               </div>
               <div>

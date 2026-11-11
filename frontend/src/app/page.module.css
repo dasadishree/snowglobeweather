@@ -86,9 +86,33 @@
 .globeSky{
   position: absolute;
   inset: 0;
-  background: linear-gradient(#101b3b, #405b7a 75%, #b5c8d2);
   transition: background 1.5s ease;
 }
+.clearSky.day{
+  background: linear-gradient(#58a6dc, #b8d8e8 75%, #e8edf0);
+}
+.clearSky.night{
+  background: linear-gradient(#08152f, #233c60 75%, #71869a);
+}
+.partlyCloudy.day{
+  background: linear-gradient(#78b8df, #c5dce8 75%, #e8edf0);
+}
+.partlyCloudy.night{
+  background: linear-gradient(#172744, #405570 75%, #8999a7);
+}
+.overcast{
+  background: linear-gradient(#667887, #a4b2ba 75%, #d0d8da);
+}
+.stormy{
+  background: linear-gradient(#263746, #536675 75%, #8799a3);
+}
+.snowy{
+  background: linear-gradient(#8ca9bd, #c5d7e0 75%, #edf1f2);
+}
+.foggy{
+  background: linear-gradient(#899ba5, #c2cdd0 75%, #e1e6e5);
+}
+
 .moon{
   position: absolute;
   width: 48px;
@@ -112,8 +136,6 @@
   bottom: 0;
   width: 100%;
   height: 43%;
-}
-.globeLandscape{
   z-index: 4;
 }
 .mountain{
