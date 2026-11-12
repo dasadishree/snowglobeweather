@@ -34,7 +34,8 @@ export default function Home() {
   const [skyPhase, setSkyPhase] = useState<
     "day" | "night" | "sunrise" | "sunset"
   >("night");
-  
+  const [cityQuery, setCityQuery] = useState("");
+
   useEffect(() => {
     setCurrentDate(
       new Date().toLocaleDateString("en-US", {
@@ -111,110 +112,126 @@ export default function Home() {
         : styles.night
     }`}>
       <header className={styles.header}>
-        <p className={styles.brand}>SNOWGLOBE</p>
-        <p className={styles.date}>{currentDate}</p>
+        <div className={styles.headerBrand}>
+          <p className={styles.brand}>SNOWGLOBE</p>
+          <p className={styles.date}>{currentDate}</p>
+        </div>
+
+        <input
+          className={styles.search}
+          type="text"
+          placeholder="search a city..."
+          value={cityQuery}
+          onChange={(e)=>setCityQuery(e.target.value)}
+        />
       </header>
 
       <section className={styles.experience}>
-        <div className={styles.location}>
-          <p className={styles.eyebrow}>CURRENTLY IN</p>
-          <h1>Mineola, NY</h1>
-          <p className={styles.condition}>
-            {weather ? weather.condition : error || "loading weather..."}
-          </p>
-        </div>
-        
-        <div className={styles.globe}>
-          <div className={styles.globeGlass}>
-            <div
-              className={`${styles.globeSky} ${
-                weather?.lighting === "day" ? styles.day : styles.night
-              } ${
-                weather?.scene==="rain" || weather?.scene === "thunderstorm"
-                  ? styles.stormy
-                  : weather?.scene === "snow"
-                  ? styles.snowy
-                  : weather?.scene === "fog"
-                  ? styles.foggy
-                  : weather?.scene === "cloudy"
-                  ? styles.overcast
-                  : weather?.scene === "partly_cloudy"
-                  ? styles.partlyCloudy
-                  : styles.clearSky
-              }`}
-            >
-              {weather?.lighting === "night" && (
-                <div className={styles.moon}/>
-              )}
+        <h1 className={styles.cityTitle}>MINEOLA, US</h1>
 
-            {weather?.effects.stars && (
-              <div className={styles.stars}>✦ · ✧ · ✦</div>
-            )}
+        <div className={styles.weatherLayout}>
+          <div className={styles.weatherLeft}>
+            <p className={styles.condition}>
+              {weather ? weather.condition : error || "loading..."}
+            </p>
+
+            <div className={styles.detail}>
+              <span>FEELS LIKE</span>
+              <strong>
+                {weather
+                  ? `${Math.round(weather.feels_like *9/5+32)}°`
+                  : "--"}
+              </strong>
             </div>
 
-            {weather?.effects.clouds && (
-              <div className={styles.clouds}/>
-            )}
-
-            {weather?.effects.rain && (
-              <div className={styles.rain}/>
-            )}
-
-            {weather?.effects.snow && (
-              <div className={styles.snow}/>
-            )}
-            {weather?.effects.fog && (
-              <div className={styles.fog}/>
-            )}
-            {weather?.effects.sunlight && (
-              <div className={styles.sunlight}/>
-            )}
-            <div className={styles.globeLandscape}>
-              <div className={styles.mountain}/>
-              <div className={styles.snowGround}/>
+            <div className={styles.detail}>
+                <span>LOW</span>
+                <strong>
+                  {weather
+                    ? `${Math.round(weather.low * 9/5 + 32)}°`
+                    : "--"}
+                </strong>
             </div>
           </div>
+
+          <div className={styles.globe}>
+            <div className={styles.globeGlass}>
+              <div
+                className={`${styles.globeSky} ${
+                  weather?.lighting === "day" ? styles.day : styles.night
+                } ${
+                  weather?.scene === "rain" ||
+                  weather?.scene === "thunderstorm"
+                    ? styles.stormy
+                    : weather?.scene === "snow"
+                    ? styles.snowy
+                    : weather?.scene === "fog"
+                    ? styles.foggy
+                    : weather?.scene === "cloudy"
+                    ? styles.overcast
+                    : weather?.scene === "partly_cloudy"
+                    ? styles.partlyCloudy
+                    : styles.clearSky
+                }`}
+              >
+                {weather?.lighting === "night" && (
+                  <div className={styles.moon}/>
+                )}
+                
+                {weather?.effects.stars&& (
+                  <div className={styles.stars}>✦ · ✧ · ✦</div>
+                )}
+              </div>
+
+              {weather?.effects.clouds && (
+                <div className={styles.clouds}/>
+              )}
+
+              {weather?.effects.rain && (
+                <div className={styles.rain}/>
+              )}
+
+              {weather?.effects.snow && (
+                <div className={styles.snow}/>
+              )}
+              {weather?.effects.fog && (
+                <div className={styles.fog}/>
+              )}
+              {weather?.effects.sunlight && (
+                <div className={styles.sunlight}/>
+              )}
+
+              <div className={styles.globeLandscape}>
+                <div className={styles.mountain}/>
+                <div className={styles.snowGround}/>
+              </div>
+            </div>
 
             <div className={styles.globeNeck}/>
             <div className={styles.globeBase}>
               <div className={styles.baseHighlight}/>
             </div>
-            </div>
+          </div>
 
-          <div className={styles.weather}>
-            <p className={styles.temperature}>
-              {weather 
-                ? `${Math.round(weather.temperature*9/5+32)}°` 
-                : "--°"}
-            </p>
-            <p className={styles.feelsLike}>
-              FEELS LIKE{" "}
-              {weather
-              ? `${Math.round(weather.feels_like * 9/5+32)}°`
-              : "--"}
-            </p>
-            <div className={styles.weatherDetails}>
-              <div>
-                <span>HIGH</span>
-                <strong>
-                  {weather ? `${Math.round(weather.high*9/5+32)}°`: "--"}
-                </strong>
-              </div>
-              <div>
-                <span>LOW</span>
-                <strong>
-                  {weather ? `${Math.round(weather.low * 9/5 + 32)}°` : "--"}
-                </strong>
-              </div>
-              <div>
+          <div className={styles.weatherRight}>
+              <p className={styles.temperature}>
+                  {weather
+                    ? `${Math.round(weather.temperature*9/5+32)}°`
+                    : "--°"}
+              </p>
+              <p className={styles.temperatureLabel}>FAHRENHEIT</p>
+
+              <div className={styles.detail}>
                 <span>WIND</span>
                 <strong>
-                  {weather ? `${Math.round(weather.wind_speed*0.621371)} mph` : "--"}
+                  {weather
+                  ? `${Math.round(weather.wind_speed * 0.621371)} mph`
+                  : "--"}
                 </strong>
-              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
     </main>
   );
 }

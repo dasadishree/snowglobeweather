@@ -63,7 +63,8 @@
   font-size: 14px;
 }
 .globe{
-  width: min(48vw, 490px);
+  width: 100%;
+  max-width: 490px;
   aspect-ratio: 1/1.2;
   display: flex;
   flex-direction: column;
@@ -291,6 +292,25 @@
     transparent 48%
   );
 }
+
+.detail strong{
+  font-size: 17px;
+  font-weight: 500;
+}
+.weatherRight{
+  justify-self: start;
+}
+.temperature{
+  font-size: clamp(65px, 7vw, 90px);
+  font-weight: 400;
+  letter-spacing: -5px;
+  margin: 0;
+  line-height: 1;
+}
+.temperatureLabel{
+  margin: 12px 0 30px;
+}
+
 @keyframes rainFall{
   from{
     background-position: 0 0;
@@ -324,31 +344,47 @@
     transform: translateX(8px);
   }
 }
-
-@media(max-width: 750px){
+@media (max-width: 750px){
   .page{
     padding: 24px 6%;
+    overflow-y: auto;
+  }
+  .headerBrand{
+    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .search{
+    width: 145px;
   }
   .experience{
-    flex-direction: column;
-    justify-content: center;
     gap: 25px;
-    text-align: center;
+    padding: 35px 0;
+  }
+  .weatherLayout{
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
   .globe{
+    grid-column: 1/-1;
+    grid-row: 1;
     width: min(75vw, 390px);
+    justify-self: center;
   }
-  .location h1{
-    font-size: 25px;
+  .weatherLeft{
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: center;
+  }
+  .weatherRight{
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: center;
   }
   .temperature{
-    font-size: 48px;
+    font-size: 55px;
   }
-  .weatherDetails{
-    justify-content: center;
-    margin-top: 15px;
-  }
-  .footer{
-    margin-top:25px;
+  .cityTitle{
+    letter-spacing: 5px;
   }
 }
