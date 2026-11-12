@@ -112,11 +112,6 @@ export default function Home() {
         : styles.night
     }`}>
       <header className={styles.header}>
-        <div className={styles.headerBrand}>
-          <p className={styles.brand}>SNOWGLOBE</p>
-          <p className={styles.date}>{currentDate}</p>
-        </div>
-
         <input
           className={styles.search}
           type="text"
@@ -124,6 +119,8 @@ export default function Home() {
           value={cityQuery}
           onChange={(e)=>setCityQuery(e.target.value)}
         />
+        
+        <p className={styles.date}>{currentDate}</p>
       </header>
 
       <section className={styles.experience}>
@@ -134,6 +131,24 @@ export default function Home() {
             <p className={styles.condition}>
               {weather ? weather.condition : error || "loading..."}
             </p>
+            <div className={styles.detail}>
+                <span>FEELS LIKE</span>
+                <strong>
+                  {weather
+                    ? `${Math.round(weather.low * 9/5 + 32)}°`
+                    : "--"}
+                </strong>
+            </div>
+
+            <div className={styles.detail}>
+                <span>HIGH</span>
+                <strong>
+                  {weather
+                  ? `${Math.round(weather.high * 9/5 + 32)}°`
+                  : "--"}
+                </strong>
+            </div>
+
             <div className={styles.detail}>
                 <span>LOW</span>
                 <strong>
@@ -210,15 +225,6 @@ export default function Home() {
                     : "--°"}
               </p>
               <p className={styles.temperatureLabel}>FAHRENHEIT</p>
-
-              <div className={styles.detail}>
-                <span>WIND</span>
-                <strong>
-                  {weather
-                  ? `${Math.round(weather.wind_speed * 0.621371)} mph`
-                  : "--"}
-                </strong>
-            </div>
           </div>
         </div>
       </section>
