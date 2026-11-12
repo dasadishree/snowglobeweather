@@ -134,16 +134,6 @@ export default function Home() {
             <p className={styles.condition}>
               {weather ? weather.condition : error || "loading..."}
             </p>
-
-            <div className={styles.detail}>
-              <span>FEELS LIKE</span>
-              <strong>
-                {weather
-                  ? `${Math.round(weather.feels_like *9/5+32)}°`
-                  : "--"}
-              </strong>
-            </div>
-
             <div className={styles.detail}>
                 <span>LOW</span>
                 <strong>
