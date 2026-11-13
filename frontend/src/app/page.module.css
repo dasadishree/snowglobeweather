@@ -555,3 +555,28 @@
 .locationButton:hover{
   background: #ffffff20;
 }
+/* lingnthing */
+.lightning{
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: white;
+  opacity: 0;
+  animation: lightninFlash 5s infinite;
+}
+
+@keyframes lightningFlash{
+  0%, 4%, 7%, 100% {
+    opacity: 0;
+  }
+  4.5% {
+    opacity: 0.85;
+  }
+  5.5%{
+    opacity: 0.05;
+  }
+  6%{
+    opacity: 0.6;
+  }
+}

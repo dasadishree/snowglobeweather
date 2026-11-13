@@ -8,6 +8,7 @@ type WeatherData = {
   high: number;
   low: number;
   wind_speed: number;
+  cloud_cover: number;
   condition: string;
   scene: string;
   lighting: string;
@@ -35,6 +36,13 @@ type CityResult = {
   longitude: number;
   timezone: string;
 }
+type Snowflake ={
+  left: number;
+  duration: number;
+  delay: number;
+  opacity: number;
+  size: number;
+}
 
 export default function Home() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -47,6 +55,7 @@ export default function Home() {
   const [suggestions, setSuggestions] = useState<CityResult[]>([]);
   const [selectedCity, setSelectedCity] = useState("--");
   const searchRef = useRef<HTMLDivElement>(null);
+  const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
 
   async function loadWeather(latitude: number, longitude: number){
     try{
@@ -151,6 +160,16 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const flakes = Array.from({length: 35}, () => ({
+      left: Math.random() * 100,
+      duration: 4 + Math.random() * 7, 
+      delay: Math.random() * 8,
+      opacity: 0.4 + Math.random() * 0.6,
+      size: 3+Math.random() * 5,
+    }));
+    setSnowflakes(flakes);
+  }, []);
   function selectCity(city: CityResult){
     const label=[
       city.name,
@@ -318,24 +337,32 @@ export default function Home() {
               </div>
 
               {weather?.effects.clouds && (
-                <div className={styles.clouds}/>
+                <div 
+                  className={styles.clouds}
+                  style={{
+                    opacity: 0.2 + (weather.cloud_cover / 100) * 0.8,
+                  }}
+                />
               )}
 
               {weather?.effects.rain && (
                 <div className={styles.rain}/>
               )}
+              {weather?.effects.lightning && (
+                <div className={styles.lightning}/>
+              )}
 
-              {true && (
+              {weather?.effects.snow && (
                 <div className={styles.snow}>
-                {Array.from({length:35}).map((_, i) => (
+                {snowflakes.map((flake, i) => (
                   <span
                     key={i}
                     style={{
-                      left: `${Math.random() *100}%`,
-                      animationDuration: `${4+Math.random() *7}s`,
-                      animationDelay: `${Math.random()*8}s`,
-                      opacity: 0.4 + Math.random() * 0.6,
-                      fontSize: `${3+Math.random() *5}px`,
+                      left: `${flake.left}%`,
+                      animationDuration: `${flake.duration}s`,
+                      animationDelay: `${flake.delay}s`,
+                      opacity: flake.opacity,
+                      fontSize: `${flake.size}px`,
                     }}
                   >
                     ❄
