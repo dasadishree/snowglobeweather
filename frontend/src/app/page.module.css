@@ -323,15 +323,29 @@
 .snow{
   position: absolute;
   inset: 0;
-  z-index: 2;
+  overflow: hidden;
   pointer-events: none;
-  background-image:
-    radial-gradient(circle, #fff 1.5px, transparent 2px),
-    radial-gradient(circle, #e5f4ff 2px, transparent 2.5px),
-    radial-gradient(circle, #fff 1px, transparent 2px);
-  background-size: 65px 75px, 100px 110px, 45px 55px;
-  background-position: 0 0, 30px 20px, 15px 40px;
-  animation: snowFall 8s linear infinite;
+  z-index: 5;
+}
+.snow span{
+  position: absolute;
+  top: -15px;
+  color: white;
+  animation-name: snowfall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  text-shadow: 0 0 5px #ffffff80;
+}
+@keyframes snowfall{
+  0% {
+    transform: translate3d(0,-10px,0) rotate(0deg);
+  }
+  50%{
+    transform: translate3d(18px, 50%, 0) rotate(180deg);
+  }
+  100%{
+    transform: translate3d(-12px, 110%, 0) rotate(360deg);
+  }
 }
 .fog{
   position: absolute;
@@ -407,7 +421,7 @@
 /* search stylyesigng */
 .searchContainer{
   position: relative;
-  width: 210px;
+  width: 220px;
   z-index: 20;
 }
 .search{
@@ -442,7 +456,11 @@
 .suggestion:hover{
   background: #ffffff20;
 }
-
+.noResults{
+  padding: 12px;
+  color: #ffffff99;
+  font-size: 13px;
+}
 @keyframes rainFall{
   from{
     background-position: 0 0;
@@ -521,4 +539,19 @@
     letter-spacing: 5px;
     font-size: 25px;
   }
+}
+.locationButton{
+  background: transparent;
+  border: 1px solid #ffffff55;
+  color: inherit;
+  padding: 9px 14px;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease; 
+}
+
+.locationButton:hover{
+  background: #ffffff20;
 }

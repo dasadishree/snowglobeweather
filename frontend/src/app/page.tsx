@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
 type WeatherData = {
@@ -30,7 +30,6 @@ type WeatherData = {
 // search
 type CityResult = {
   name: string;
-  region: string | null;
   country: string;
   latitude: number;
   longitude: number;
@@ -46,7 +45,8 @@ export default function Home() {
   >("night");
   const [cityQuery, setCityQuery] = useState("");
   const [suggestions, setSuggestions] = useState<CityResult[]>([]);
-  const [selectedCity, setSelectedCity] = useState("Mineola, US")
+  const [selectedCity, setSelectedCity] = useState("--");
+  const searchRef = useRef<HTMLDivElement>(null);
 
   async function loadWeather(latitude: number, longitude: number){
     try{
@@ -59,6 +59,14 @@ export default function Home() {
       }
       const data: WeatherData = await response.json();
       setWeather(data);
+      setCurrentDate(
+        new Date().toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "numeric",
+          timeZone: data.location.timezone,
+        })
+      );
 
       const timeParts=new Intl.DateTimeFormat("en-US", {
         timeZone: data.location.timezone,
@@ -100,14 +108,7 @@ export default function Home() {
     }
   }
   useEffect(() => {
-    setCurrentDate(
-      new Date().toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "numeric",
-      })
-    );
-    loadWeather(40.752888, -73.64725);
+    useMyLocation();
   }, []);
 
   // search suggestions
@@ -135,17 +136,76 @@ export default function Home() {
 
     return () => clearTimeout(timeout);
   }, [cityQuery]);
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if(
+      searchRef.current &&
+      !searchRef.current.contains(e.target as Node)
+      ) {
+        setSuggestions([]);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return() => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   function selectCity(city: CityResult){
     const label=[
       city.name,
-      city.region,
       city.country,
     ].filter(Boolean).join(", ");
     setSelectedCity(label);
     setCityQuery("");
     setSuggestions([]);
     loadWeather(city.latitude, city.longitude);
+  }
+
+  function handleSearchKeyDown(
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) {
+    if(e.key === "Enter" && suggestions.length >0){
+      selectCity(suggestions[0]);
+    }
+    if(e.key === "Escape"){
+      setSuggestions([]);
+    }
+  }
+
+  async function useMyLocation() {
+    if(!navigator.geolocation){
+      setError("Location is not supported by this browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const {latitude, longitude} = position.coords;
+        try{
+          const response = await fetch(
+            `http://127.0.0.1:8000/reverse-geocode?latitude=${latitude}&longitude=${longitude}`
+          );
+          if(response.ok){
+            const city = await response.json();
+            const label=[
+              city.name,
+              city.country,
+            ].filter(Boolean).join(", ");
+            setSelectedCity(label);
+          } else{
+            setSelectedCity("My Location");
+          }
+        } catch{
+          setSelectedCity("My Location");
+        }
+        setCityQuery("");
+        setSuggestions([]);
+        loadWeather(latitude, longitude);
+      },
+      () => {
+        setError("Could not access your location. Search for a city instead.");
+      }
+    );
   }
 
   return(
@@ -159,28 +219,34 @@ export default function Home() {
         : styles.night
     }`}>
       <header className={styles.header}>
-        <input
-          className={styles.search}
-          type="text"
-          placeholder="search a city..."
-          value={cityQuery}
-          onChange={(e)=>setCityQuery(e.target.value)}
-        />
-        {suggestions.length>0 && (
+        <div className={styles.searchContainer} ref={searchRef}>
+          <input
+            className={styles.search}
+            type="text"
+            placeholder="search a city..."
+            value={cityQuery}
+            onChange={(e)=>setCityQuery(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+          />
+        
+        {cityQuery.trim().length>=2 && (
           <div className={styles.suggestions}>
-            {suggestions.map((city) => (
-              <button
-                className={styles.suggestion}
-                key={`${city.name}-${city.latitude}`}
-                onClick={()=>selectCity(city)}
-              >
-                {city.name}
-                {city.region ? `, ${city.region}` : ""}
-                {`, ${city.country}`}
-              </button>
-            ))}
+            {suggestions.length > 0 ? (
+              suggestions.map((city) => (
+                <button
+                  className={styles.suggestion}
+                  key={`${city.name}-${city.latitude}`}
+                  onClick={() => selectCity(city)}
+                >
+                  {city.name}, {city.country}
+                </button>
+              ))
+            ) : (
+              <p className={styles.noResults}>No cities found</p>
+            )}
           </div>
         )}
+      </div>
         <p className={styles.date}>{currentDate}</p>
       </header>
 
@@ -259,9 +325,25 @@ export default function Home() {
                 <div className={styles.rain}/>
               )}
 
-              {weather?.effects.snow && (
-                <div className={styles.snow}/>
+              {true && (
+                <div className={styles.snow}>
+                {Array.from({length:35}).map((_, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      left: `${Math.random() *100}%`,
+                      animationDuration: `${4+Math.random() *7}s`,
+                      animationDelay: `${Math.random()*8}s`,
+                      opacity: 0.4 + Math.random() * 0.6,
+                      fontSize: `${3+Math.random() *5}px`,
+                    }}
+                  >
+                    ❄
+                  </span>
+                ))}
+                </div>
               )}
+
               {weather?.effects.fog && (
                 <div className={styles.fog}/>
               )}

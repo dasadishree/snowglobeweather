@@ -121,6 +121,35 @@ async def search_city(city: str):
         ]
     }
 
+@app.get("/reverse-geocode")
+async def reverse_geocode(latitude: float, longitude: float):
+    url = "https://nominatim.openstreetmap.org/reverse"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            url,
+            params={
+                "lat": latitude,
+                "lon": longitude,
+                "format": "jsonv2",
+            },
+            headers={
+                "User-Agent": "SnowGlobeWeather/1.0"
+            },
+        )
+        response.raise_for_status()
+        data = response.json()
+    address = data.get("address", {})
+    return{
+        "name": (
+            address.get("city")
+            or address.get("town")
+            or address.get("village")
+            or "My Location"
+        ),
+        "region": address.get("state"),
+        "country": address.get("country", ""),
+    }
+
 # weather mapping
 def interpret_weather(data):
     current=data["current"]
