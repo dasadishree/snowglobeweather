@@ -27,6 +27,16 @@ type WeatherData = {
   sunset: string;
 };
 
+// search
+type CityResult = {
+  name: string;
+  region: string | null;
+  country: string;
+  latitude: number;
+  longitude: number;
+  timezone: string;
+}
+
 export default function Home() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [error, setError] = useState("");
@@ -35,7 +45,60 @@ export default function Home() {
     "day" | "night" | "sunrise" | "sunset"
   >("night");
   const [cityQuery, setCityQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<CityResult[]>([]);
+  const [selectedCity, setSelectedCity] = useState("Mineola, US")
 
+  async function loadWeather(latitude: number, longitude: number){
+    try{
+      setError("");
+      const response = await fetch(
+        `http://127.0.0.1:8000/scene?latitude=${latitude}&longitude=${longitude}`
+      );
+      if(!response.ok){
+        throw new Error("Could not load weather");
+      }
+      const data: WeatherData = await response.json();
+      setWeather(data);
+
+      const timeParts=new Intl.DateTimeFormat("en-US", {
+        timeZone: data.location.timezone,
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      }).formatToParts(new Date());
+
+      const hour = Number(timeParts.find(p=>p.type==="hour")?.value);
+      const minute = Number(timeParts.find(p=>p.type==="minute")?.value);
+      const currentMinutes = hour*60+minute;
+      const sunrise = data.sunrise.split("T")[1].slice(0,5);
+      const sunset = data.sunset.split("T")[1].slice(0,5);
+      const [sunriseHour, sunriseMinute] = sunrise.split(":").map(Number);
+      const [sunsetHour, sunsetMinute] = sunset.split(":").map(Number);
+      const sunriseMinutes = sunriseHour*60+sunriseMinute;
+      const sunsetMinutes = sunsetHour*60+sunsetMinute;
+      if(
+        currentMinutes>=sunriseMinutes-30 &&
+        currentMinutes <= sunriseMinutes+30
+      ){
+        setSkyPhase("sunrise");
+      } else if(
+        currentMinutes>=sunsetMinutes-30 &&
+        currentMinutes<=sunsetMinutes+30
+      ){
+        setSkyPhase("sunset");
+      } else if(
+        currentMinutes>sunriseMinutes+30 &&
+        currentMinutes<sunsetMinutes-30
+      ){
+        setSkyPhase("day");
+      } else{
+        setSkyPhase("night");
+      } 
+    } catch(err) {
+      setError("Weather data unavailabale");
+      console.error(err);
+    }
+  }
   useEffect(() => {
     setCurrentDate(
       new Date().toLocaleDateString("en-US", {
@@ -44,62 +107,46 @@ export default function Home() {
         year: "numeric",
       })
     );
+    loadWeather(40.752888, -73.64725);
+  }, []);
 
-    async function fetchWeather() {
+  // search suggestions
+  useEffect(() => {
+    if(cityQuery.trim().length <2){
+      setSuggestions([]);
+      return;
+    }
+    const timeout = setTimeout(async () => {
       try{
         const response = await fetch(
-          "http://127.0.0.1:8000/scene?latitude=40.752888&longitude=-73.64725"
+            `http://127.0.0.1:8000/geocode?city=${encodeURIComponent(cityQuery)}`
         );
         if(!response.ok){
-          throw new Error("Could not load weather");
+          setSuggestions([]);
+          return;
         }
-        const data: WeatherData = await response.json();
-        setWeather(data);
-        const timeParts = new Intl.DateTimeFormat('en-US', {
-          timeZone: data.location.timezone,
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h23",
-        }).formatToParts(new Date());
-
-        const hour = Number(timeParts.find(p=>p.type==="hour")?.value);
-        const minute = Number(timeParts.find(p=>p.type === "minute")?.value);
-        const currentMinutes = hour*60+minute;
-
-        const sunriseTime = data.sunrise.split("T")[1].slice(0,5);
-        const sunsetTime = data.sunset.split("T")[1].slice(0,5);
-
-        const [sunriseHour, sunriseMinute] = sunriseTime.split(":").map(Number);
-        const [sunsetHour, sunsetMinute] = sunsetTime.split(":").map(Number);
-
-        const sunriseMinutes = sunriseHour*60+sunriseMinute;
-        const sunsetMinutes = sunsetHour * 60+sunsetMinute;
-
-        if(
-          currentMinutes >= sunriseMinutes - 20 &&
-          currentMinutes <= sunriseMinutes + 20
-        ) {
-          setSkyPhase("sunrise");
-        } else if(
-          currentMinutes >= sunsetMinutes - 20 &&
-          currentMinutes <= sunsetMinutes + 20
-        ) {
-          setSkyPhase("sunset");
-        } else if(
-          currentMinutes > sunriseMinutes + 20 &&
-          currentMinutes < sunsetMinutes - 20
-        )   {
-          setSkyPhase("day");
-        } else{
-          setSkyPhase("night");
-        }
-      } catch(err) {
-        setError("weather data unavialbale");
+        const data=await response.json();
+        setSuggestions(data.results);
+      } catch(err){
         console.error(err);
+        setSuggestions([]);
       }
-    }
-    fetchWeather();
-  }, []);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [cityQuery]);
+
+  function selectCity(city: CityResult){
+    const label=[
+      city.name,
+      city.region,
+      city.country,
+    ].filter(Boolean).join(", ");
+    setSelectedCity(label);
+    setCityQuery("");
+    setSuggestions([]);
+    loadWeather(city.latitude, city.longitude);
+  }
 
   return(
     <main className={`${styles.page} ${
@@ -119,12 +166,28 @@ export default function Home() {
           value={cityQuery}
           onChange={(e)=>setCityQuery(e.target.value)}
         />
-        
+        {suggestions.length>0 && (
+          <div className={styles.suggestions}>
+            {suggestions.map((city) => (
+              <button
+                className={styles.suggestion}
+                key={`${city.name}-${city.latitude}`}
+                onClick={()=>selectCity(city)}
+              >
+                {city.name}
+                {city.region ? `, ${city.region}` : ""}
+                {`, ${city.country}`}
+              </button>
+            ))}
+          </div>
+        )}
         <p className={styles.date}>{currentDate}</p>
       </header>
 
       <section className={styles.experience}>
-        <h1 className={styles.cityTitle}>MINEOLA, US</h1>
+        <h1 className={styles.cityTitle}>
+          {selectedCity.toUpperCase()}
+        </h1>
 
         <div className={styles.weatherLayout}>
           <div className={styles.weatherLeft}>
@@ -135,7 +198,7 @@ export default function Home() {
                 <span>FEELS LIKE</span>
                 <strong>
                   {weather
-                    ? `${Math.round(weather.low * 9/5 + 32)}°`
+                    ? `${Math.round(weather.feels_like * 9/5 + 32)}°`
                     : "--"}
                 </strong>
             </div>
