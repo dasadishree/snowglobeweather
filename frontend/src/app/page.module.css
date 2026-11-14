@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
 
 .page{
   min-height: 100vh;
@@ -8,15 +8,15 @@
   flex-direction: column;
   align-items: center;
   padding: 32px 7%;
-  font-family: 'DM Sans', sans-serif;
-  background: linear-gradient(135deg, #172b45, #304d68);
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(145deg, #283e63, #536b91, #8296ad);
   transition: background 2s ease;
 }
 .page.day{
-  background: linear-gradient(135deg, #91b9d0, #d4e1df);
+  background: linear-gradient(145deg, #83b9d2, #b7d8df, #e4d9c9);
 }
 .page.night{
-  background: linear-gradient(135deg, #101b32, #263d58);
+  background: linear-gradient(145deg, #202c50, #394b70, #647895);
 }
 .page.sunrise{
   background: linear-gradient(120deg, #e58b79, #e9b69e 48%, #7189a7);
@@ -42,7 +42,8 @@
   color: #aab9c9;
 }
 .date{
-  font-size: 11px;
+  font-size: 14px;
+  font-weight: 600;
   letter-spacing: 1.5px;
   color: #ffffffa0;
 }
@@ -59,10 +60,10 @@
 .cityTitle{
   width: 100%;
   text-align: center;
-  font-family: "DM Sans", sans-serif;
-  font-size: clamp(32px, 4vw, 48px);
-  font-weight: 400;
-  letter-spacing: 9px;
+  font-family: "Nunito", sans-serif;
+  font-size: 75px;
+  font-weight: 1000;
+  letter-spacing: 5px;
   margin: 0 0 12px;
   color: #ffffff;
   padding: 0;
@@ -91,10 +92,11 @@
   text-align: left;
 }
 .condition{
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 800;
   margin: 0;
   color: #ffffff;
+  text-transform: capitalize;
 }
 .detail{
   display: flex;
@@ -102,15 +104,14 @@
   gap: 8px;
 }
 .detail span{
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 2.5px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
   color: #ffffffa0;
 }
 .detail strong{
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: -0.5px;
+  font-size: 21px;
+  font-weight: 700;
   color: #ffffff;
 }
 .globe{
@@ -372,11 +373,6 @@
     transparent 48%
   );
 }
-
-.detail strong{
-  font-size: 17px;
-  font-weight: 500;
-}
 .weatherRight{
   grid-column: 3;
   grid-row: 1;
@@ -385,7 +381,7 @@
   text-align: left;
 }
 .temperature{
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: clamp(76px, 8vw, 105px);
   font-weight: 400;
   letter-spacing: -7px;
@@ -394,7 +390,8 @@
   color: #ffffff;
 }
 .temperatureLabel{
-  font-size: 10px;
+  font-size: 13px;
+  font-weight: 700;
   letter-spacing: 3px;
   color: #ffffffa8;
   margin-top: 14px;
@@ -407,7 +404,7 @@
   outline: none;
   background: transparent;
   color: white;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 13px;
   transition: border-color 0.3s ease;
 }
@@ -579,4 +576,35 @@
   6%{
     opacity: 0.6;
   }
+}
+
+/* scenes */
+.sceneArtwork{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  z-index: 1;
+  pointer-events:none;
+}
+.clouds{
+  z-index: 2;
+}
+.rain{
+  z-index: 3;
+}
+.lightning{
+  z-index: 4;
+}
+.snow{
+  z-index: 2;
+}
+.fog{
+  z-index: 6;
+}
+.sunlight{
+  z-index: 7;
 }

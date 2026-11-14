@@ -227,6 +227,12 @@ export default function Home() {
     );
   }
 
+  const cityScene = selectedCity.toLowerCase().includes("san francisco")
+    ? "sf"
+    : selectedCity.toLowerCase().includes("new york")
+    ? "nyc"
+    : null;
+
   return(
     <main className={`${styles.page} ${
       skyPhase === "day"
@@ -309,6 +315,14 @@ export default function Home() {
 
           <div className={styles.globe}>
             <div className={styles.globeGlass}>
+            {cityScene ? (
+              <img
+                className={styles.sceneArtwork}
+                src={`/scenes/${cityScene}.png`}
+                alt={`${cityScene} winter city scene`}
+              />
+            ) : (
+              <>
               <div
                 className={`${styles.globeSky} ${
                   weather?.lighting === "day" ? styles.day : styles.night
@@ -335,6 +349,8 @@ export default function Home() {
                   <div className={styles.stars}>✦ · ✧ · ✦</div>
                 )}
               </div>
+              </>
+            )}
 
               {weather?.effects.clouds && (
                 <div 
@@ -378,11 +394,11 @@ export default function Home() {
                 <div className={styles.sunlight}/>
               )}
 
-              <div className={styles.globeLandscape}>
-                <div className={styles.mountain}/>
-                <div className={styles.snowGround}/>
+                <div className={styles.globeLandscape}>
+                  <div className={styles.mountain}/>
+                  <div className={styles.snowGround}/>
+                </div>
               </div>
-            </div>
 
             <div className={styles.globeNeck}/>
             <div className={styles.globeBase}>
