@@ -61,7 +61,7 @@ export default function Home() {
     try{
       setError("");
       const response = await fetch(
-        `http://127.0.0.1:8000/scene?latitude=${latitude}&longitude=${longitude}`
+        `https://snowglobeweather-backend.vercel.app/scene?latitude=${latitude}&longitude=${longitude}`
       );
       if(!response.ok){
         throw new Error("Could not load weather");
@@ -129,7 +129,7 @@ export default function Home() {
     const timeout = setTimeout(async () => {
       try{
         const response = await fetch(
-            `http://127.0.0.1:8000/geocode?city=${encodeURIComponent(cityQuery)}`
+            `https://snowglobeweather-backend.vercel.app/geocode?city=${encodeURIComponent(cityQuery)}`
         );
         if(!response.ok){
           setSuggestions([]);
@@ -202,7 +202,7 @@ export default function Home() {
         const {latitude, longitude} = position.coords;
         try{
           const response = await fetch(
-            `http://127.0.0.1:8000/reverse-geocode?latitude=${latitude}&longitude=${longitude}`
+            `https://snowglobeweather-backend.vercel.app/reverse-geocode?latitude=${latitude}&longitude=${longitude}`
           );
           if(response.ok){
             const city = await response.json();
