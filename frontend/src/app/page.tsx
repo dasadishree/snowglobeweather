@@ -232,6 +232,7 @@ export default function Home() {
     : selectedCity.toLowerCase().includes("new york")
     ? "nyc"
     : null;
+    console.log("Selected city:", selectedCity, "Scene:", cityScene);
 
   return(
     <main className={`${styles.page} ${
