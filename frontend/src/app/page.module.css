@@ -31,21 +31,11 @@
   align-items: center;
   min-height: 40px;
 }
-.brand{
-  font-size: 13px;
-  letter-spacing: 5px;
-  font-weight: 600;
-}
-.date, .eyebrow, .feelsLike, .weatherDetails span{
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: #aab9c9;
-}
 .date{
   font-size: 14px;
-  font-weight: 600;
   letter-spacing: 1.5px;
   color: #ffffffa0;
+  font-weight: 600;
 }
 .experience{
   flex: 1;
@@ -126,19 +116,6 @@
   position: relative;
   filter: drop-shadow(0 25px 35px #0008);
 }
-.location{
-  min-width: 180px;
-}
-.location h1{
-  font-family: Georgia, serif;
-  font-size: 30px;
-  font-weight: 400;
-  margin: 12px 0 8px;
-}
-.condition{
-  color: #b9c8d8;
-  font-size: 14px;
-}
 .globeGlass{
   width: 100%;
   aspect-ratio: 1;
@@ -165,6 +142,7 @@
     #ffffff12 100%
   );
   pointer-events: none;
+  z-index:8;
 }
 .globeSky{
   position: absolute;
@@ -259,43 +237,15 @@
   height: 2px;
   background: #ffffff75;
 }
-.weather{
-  min-width: 170px;
-}
 .temperature{
   font-family: Georgia, serif;
   font-size: 72px;
   margin: 0;
   font-weight: 400;
 }
-.feelsLike{
-  margin-top: 0;
-}
-.weatherDetails{
-  display: flex;
-  gap:22px;
-  margin-top:35px;
-}
-.weatherDetails div{
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-.weatherDetails strong{
-  font-size: 13px;
-  font-weight: 400;
-}
-.footer{
-  color: #9aabbd;
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 14px;
-  padding-bottom: 10px;
-}
 .clouds{
   position: absolute;
   inset: 0;
-  z-index: 1;
   pointer-events: none;
   opacity: 0.8;
   background:
@@ -303,12 +253,12 @@
     radial-gradient(ellipse 27% 12% at 38% 32%, #aabac8 0%, transparent 100%),
     radial-gradient(ellipse 25% 10% at 75% 22%, #d0d9df 0%, transparent 100%);
   animation: cloudDrift 18s ease-in-out infinite alternate;
+  z-index: 2;
 }
 
 .rain{
   position: absolute;
   inset: 0;
-  z-index: 2;
   pointer-events: none;
   opacity: 0.65;
   background-image: repeating-linear-gradient(
@@ -320,6 +270,7 @@
   );
   background-size: 35px 45px;
   animation: rainFall 0.7s linear infinite;
+  z-index: 3;
 }
 .snow{
   position: absolute;
@@ -332,12 +283,12 @@
   position: absolute;
   top: -15px;
   color: white;
-  animation-name: snowfall;
+  animation-name: snowFall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   text-shadow: 0 0 5px #ffffff80;
 }
-@keyframes snowfall{
+@keyframes snowFall{
   0% {
     transform: translate3d(0,-10px,0) rotate(0deg);
   }
@@ -351,7 +302,7 @@
 .fog{
   position: absolute;
   inset: 35% 0 0;
-  z-index: 3;
+  z-index: 6;
   pointer-events: none;
   background: linear-gradient(
     to bottom,
@@ -364,7 +315,7 @@
 .sunlight{
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 7;
   pointer-events: none;
   background: radial-gradient(
     circle at 75% 25%,
@@ -380,15 +331,7 @@
   width: 180px;
   text-align: left;
 }
-.temperature{
-  font-family: 'Nunito', sans-serif;
-  font-size: clamp(76px, 8vw, 105px);
-  font-weight: 400;
-  letter-spacing: -7px;
-  margin: 0;
-  line-height: 1;
-  color: #ffffff;
-}
+
 .temperatureLabel{
   font-size: 13px;
   font-weight: 700;
@@ -396,8 +339,10 @@
   color: #ffffffa8;
   margin-top: 14px;
 }
+
+/* search stylyesigng */
 .search{
-  width: 210px;
+  width: 100%;
   padding: 11px 0;
   border: none;
   border-bottom: 1px solid #ffffff65;
@@ -414,15 +359,10 @@
 .search:focus{
   border-bottom-color: white;
 }
-
-/* search stylyesigng */
 .searchContainer{
   position: relative;
   width: 220px;
   z-index: 20;
-}
-.search{
-  width: 100%;
 }
 .suggestions{
   position: absolute;
@@ -463,14 +403,6 @@
     background-position: 0 0;
   } to{
     background-position: -20px 100px;
-  }
-}
-
-@keyframes snowFall{
-  from{
-    background-position: 0 0, 30px 20px, 15px 40px;
-  } to{
-    background-position: 35px 300px, 80px 350px, -20px 250px;
   }
 }
 
@@ -537,21 +469,7 @@
     font-size: 25px;
   }
 }
-.locationButton{
-  background: transparent;
-  border: 1px solid #ffffff55;
-  color: inherit;
-  padding: 9px 14px;
-  border-radius: 20px;
-  font-family: inherit;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.2s ease; 
-}
 
-.locationButton:hover{
-  background: #ffffff20;
-}
 /* lingnthing */
 .lightning{
   position: absolute;
@@ -560,7 +478,7 @@
   pointer-events: none;
   background: white;
   opacity: 0;
-  animation: lightninFlash 5s infinite;
+  animation: lightningFlash 5s infinite;
 }
 
 @keyframes lightningFlash{
@@ -589,22 +507,4 @@
   object-position: center bottom;
   z-index: 1;
   pointer-events:none;
-}
-.clouds{
-  z-index: 2;
-}
-.rain{
-  z-index: 3;
-}
-.lightning{
-  z-index: 4;
-}
-.snow{
-  z-index: 2;
-}
-.fog{
-  z-index: 6;
-}
-.sunlight{
-  z-index: 7;
 }

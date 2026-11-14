@@ -19,42 +19,14 @@ app.add_middleware(
 def home():
     return {"message": "Snowglobe weather API is running!"}
 
-@app.get("/weather")
 async def get_weather(latitude: float, longitude: float):
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
         "latitude": latitude,
         "longitude": longitude,
-        "current": [
-            "temperature_2m",
-            "relative_humidity_2m",
-            "apparent_temperature",
-            "is_day",
-            "precipitation",
-            "rain",
-            "showers",
-            "snowfall",
-            "cloud_cover",
-            "wind_speed_10m",
-            "weather_code"
-        ],
-        "hourly": [
-            "temperature_2m",
-            "precipitation_probability",
-            "precipitation",
-            "rain",
-            "snowfall",
-            "cloud_cover",
-            "weather_code"
-        ],
-        "daily": [
-            "weather_code",
-            "temperature_2m_max",
-            "temperature_2m_min",
-            "precipitation_probability_max",
-            "sunrise",
-            "sunset"
-        ],
+        "current": "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,cloud_cover,wind_speed_10m,weather_code",
+        "hourly": "temperature_2m,precipitation_probability,precipitation,rain,snowfall,cloud_cover,weather_code",
+        "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset",
         "timezone": "auto",
         "forecast_days": 1
     }
@@ -125,25 +97,34 @@ async def search_city(city: str):
 async def reverse_geocode(latitude: float, longitude: float):
     url = "https://nominatim.openstreetmap.org/reverse"
     async with httpx.AsyncClient() as client:
-        response = await client.get(
-            url,
-            params={
-                "lat": latitude,
-                "lon": longitude,
-                "format": "jsonv2",
-            },
-            headers={
-                "User-Agent": "SnowGlobeWeather/1.0"
-            },
-        )
-        response.raise_for_status()
-        data = response.json()
+        try: 
+            response = await client.get(
+                url,
+                params={
+                    "lat": latitude,
+                    "lon": longitude,
+                    "format": "jsonv2",
+                },
+                headers={
+                    "User-Agent": "SnowGlobeWeather/1.0"
+                },
+                timeout=15.0,
+            )
+            response.raise_for_status()
+            data=response.json()
+        except httpx.HTTPError:
+            raise HTTPException(
+                status_code=502,
+                detail="Could not retrieve location information"
+            )
     address = data.get("address", {})
     return{
         "name": (
             address.get("city")
             or address.get("town")
             or address.get("village")
+            or address.get("municipality")
+            or address.get("suburb")
             or "My Location"
         ),
         "region": address.get("state"),
@@ -177,13 +158,23 @@ def interpret_weather(data):
         effects["snow"]=True
         effects["clouds"]=True
 
-    elif code in [51,53,55,56,57,
-                  61,63,65,66,67,
-                  80,81,82]:
-        condition="Rain"
+    elif code in [56,57,66,67]:
+        condition="Freezing Rain"
         scene="rain"
         effects["rain"] = True
         effects["clouds"] = True
+    
+    elif code in [51,53,55]:
+        condition="Drizzle"
+        scene="rain"
+        effects["rain"]=True
+        effects["clouds"]=True
+
+    elif code in [61, 63, 65, 80, 81, 82]:
+        condition="Rain"
+        scene="rain"
+        effects["rain"]=True
+        effects["clouds"]=True
 
     elif code in [45,48]:
         condition="Fog"

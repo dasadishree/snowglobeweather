@@ -349,6 +349,11 @@ export default function Home() {
                   <div className={styles.stars}>✦ · ✧ · ✦</div>
                 )}
               </div>
+
+                <div className={styles.globeLandscape}>
+                  <div className={styles.mountain}/>
+                  <div className={styles.snowGround}/>
+                </div>
               </>
             )}
 
@@ -393,11 +398,6 @@ export default function Home() {
               {weather?.effects.sunlight && (
                 <div className={styles.sunlight}/>
               )}
-
-                <div className={styles.globeLandscape}>
-                  <div className={styles.mountain}/>
-                  <div className={styles.snowGround}/>
-                </div>
               </div>
 
             <div className={styles.globeNeck}/>
