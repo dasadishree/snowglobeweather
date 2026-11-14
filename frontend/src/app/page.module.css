@@ -272,6 +272,7 @@
   animation: rainFall 0.7s linear infinite;
   z-index: 3;
 }
+
 .snow{
   position: absolute;
   inset: 0;
